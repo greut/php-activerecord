@@ -449,6 +449,17 @@ abstract class Connection
 	}
 
 	/**
+	 * Return a binary formatted into the database's format.
+	 *
+	 * @param Binary $binary The Binary object
+	 * @return string
+	 */
+	public function binary_to_string($binary)
+	{
+		return $binary->format('bin');
+	}
+
+	/**
 	 * Converts a string representation of a datetime into a DateTime object.
 	 *
 	 * @param string $string A datetime in the form accepted by date_create()

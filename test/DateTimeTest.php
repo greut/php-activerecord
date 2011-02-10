@@ -2,10 +2,11 @@
 include 'helpers/config.php';
 use ActiveRecord\DateTime as DateTime;
 
-class DateTimeTest extends SnakeCase_PHPUnit_Framework_TestCase
+class DateTimeTest extends DatabaseTest
 {
-	public function set_up()
+	public function set_up($connection_name=null)
 	{
+		parent::set_up($connection_name);
 		$this->date = new DateTime();
 		$this->original_format = DateTime::$DEFAULT_FORMAT;
 	}

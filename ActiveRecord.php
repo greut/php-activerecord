@@ -10,6 +10,7 @@ if (!defined('PHP_ACTIVERECORD_AUTOLOAD_PREPEND'))
 require 'lib/Singleton.php';
 require 'lib/Config.php';
 require 'lib/Utils.php';
+require 'lib/Binary.php';
 require 'lib/DateTime.php';
 require 'lib/Model.php';
 require 'lib/Table.php';

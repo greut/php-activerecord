@@ -519,5 +519,20 @@ class ActiveRecordTest extends DatabaseTest
 		$row = Author::query('SELECT COUNT(*) AS n FROM authors WHERE name=?',array('Tito'))->fetch();
 		$this->assert_equals(array('n' => 1), $row);
 	}
-};
+
+	public function test_binary_passwd()
+	{
+		$author = new Author(array('passwd' => md5('password')));
+		$this->assert_equals(
+			md5('password'),
+			$author->passwd->hex
+		);
+
+		$this->assert_true($author->save());
+		$this->assert_equals(
+			md5('password'),
+			(string)Author::find($author->id)->passwd
+		);
+	}
+}
 ?>

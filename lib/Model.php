@@ -444,10 +444,10 @@ class Model
 		if ($value instanceof \DateTime)
 			$value = new DateTime($value->format('Y-m-d H:i:s T'));
 
-		// make sure DateTime values know what model they belong to so
-		// dirty stuff works when calling set methods on the DateTime object
-		if ($value instanceof DateTime)
-			$value->attribute_of($this,$name);
+		// make sure Attribute values know what model they belong to so
+		// dirty stuff works when calling set methods on the Attribute object
+		if ($value instanceof InterfaceAttribute)
+			$value->attribute_of($this, $name);
 
 		$this->attributes[$name] = $value;
 		$this->flag_dirty($name);
@@ -1722,30 +1722,30 @@ class Model
 		return $this->serialize('Xml', $options);
 	}
 
-   /**
-   * Returns an CSV representation of this model.
-   * Can take optional delimiter and enclosure
-   * (defaults are , and double quotes)
-   *
-   * Ex:
-   * <code>
-   * ActiveRecord\CsvSerializer::$delimiter=';';
-   * ActiveRecord\CsvSerializer::$enclosure='';
-   * YourModel::find('first')->to_csv(array('only'=>array('name','level')));
-   * returns: Joe,2
-   *
-   * YourModel::find('first')->to_csv(array('only_header'=>true,'only'=>array('name','level')));
-   * returns: name,level
-   * </code>
-   *
-   * @see Serialization
-   * @param array $options An array containing options for csv serialization (see {@link Serialization} for valid options)
-   * @return string CSV representation of the model
-   */
-  public function to_csv(array $options=array())
-  {
-    return $this->serialize('Csv', $options);
-  }
+	/**
+	* Returns an CSV representation of this model.
+	* Can take optional delimiter and enclosure
+	* (defaults are , and double quotes)
+	*
+	* Ex:
+	* <code>
+	* ActiveRecord\CsvSerializer::$delimiter=';';
+	* ActiveRecord\CsvSerializer::$enclosure='';
+	* YourModel::find('first')->to_csv(array('only'=>array('name','level')));
+	* returns: Joe,2
+	*
+	* YourModel::find('first')->to_csv(array('only_header'=>true,'only'=>array('name','level')));
+	* returns: name,level
+	* </code>
+	*
+	* @see Serialization
+	* @param array $options An array containing options for csv serialization (see {@link Serialization} for valid options)
+	* @return string CSV representation of the model
+	*/
+	public function to_csv(array $options=array())
+	{
+		return $this->serialize('Csv', $options);
+	}
 
 	/**
 	 * Returns an Array representation of this model.
@@ -1850,5 +1850,5 @@ class Model
 		}
 		return true;
 	}
-};
+}
 ?>

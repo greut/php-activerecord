@@ -60,6 +60,16 @@ class ColumnTest extends SnakeCase_PHPUnit_Framework_TestCase
 		$this->assert_mapped_type(Column::STRING,'text');
 	}
 
+	public function test_map_raw_type_binary()
+	{
+		$this->assert_mapped_type(Column::BINARY,'binary');
+		$this->assert_mapped_type(Column::BINARY,'varbinary');
+		$this->assert_mapped_type(Column::BINARY,'bytea');
+		$this->assert_mapped_type(Column::BINARY,'tinyblob');
+		$this->assert_mapped_type(Column::BINARY,'blob');
+		$this->assert_mapped_type(Column::BINARY,'mediumblob');
+	}
+
 	public function test_map_raw_type_default_to_string()
 	{
 		$this->assert_mapped_type(Column::STRING,'bajdslfjasklfjlksfd');
@@ -91,7 +101,8 @@ class ColumnTest extends SnakeCase_PHPUnit_Framework_TestCase
 			Column::INTEGER,
 			Column::DECIMAL,
 			Column::DATETIME,
-			Column::DATE);
+			Column::DATE,
+			Column::BINARY);
 
 		foreach ($types as $type) {
 			$this->assert_cast($type,null,null);
@@ -110,6 +121,14 @@ class ColumnTest extends SnakeCase_PHPUnit_Framework_TestCase
 	{
 		$column = new Column();
 		$column->type = Column::DATETIME;
+		$this->assert_equals(null,$column->cast(null,$this->conn));
+		$this->assert_equals(null,$column->cast('',$this->conn));
+	}
+
+	public function test_empty_and_null_binary_strings_should_return_null()
+	{
+		$column = new Column();
+		$column->type = Column::BINARY;
 		$this->assert_equals(null,$column->cast(null,$this->conn));
 		$this->assert_equals(null,$column->cast('',$this->conn));
 	}

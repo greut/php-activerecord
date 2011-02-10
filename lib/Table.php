@@ -405,6 +405,10 @@ class Table
 				else
 					$hash[$name] = $this->conn->datetime_to_string($value);
 			}
+			elseif ($value instanceof Binary)
+			{
+				$hash[$name] = $this->conn->binary_to_string($value);
+			}
 			else
 				$hash[$name] = $value;
 		}
@@ -498,7 +502,7 @@ class Table
 	 *
 	 * array('delegate' => array('field1','field2',...),
 	 *       'to'       => 'delegate_to_relationship',
-	 *       'prefix'	=> 'prefix')
+	 *       'prefix'   => 'prefix')
 	 */
 	private function set_delegates()
 	{

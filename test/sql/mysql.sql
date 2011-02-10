@@ -2,8 +2,10 @@ CREATE TABLE authors(
 	author_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	parent_author_id INT,
 	name VARCHAR(25) NOT NULL DEFAULT 'default_name',
+	passwd BINARY(16) NULL,
 	updated_at datetime,
 	created_at datetime,
+	some_binary binary,
 	some_date date,
 	some_time time,
 	some_text text,
@@ -60,9 +62,9 @@ CREATE TABLE positions (
 );
 
 CREATE TABLE `rm-bldg`(
-    `rm-id` INT NOT NULL,
-    `rm-name` VARCHAR(10) NOT NULL,
-    `space out` VARCHAR(1) NOT NULL
+	`rm-id` INT NOT NULL,
+	`rm-name` VARCHAR(10) NOT NULL,
+	`space out` VARCHAR(1) NOT NULL
 );
 
 CREATE TABLE awesome_people(
@@ -72,16 +74,16 @@ CREATE TABLE awesome_people(
 );
 
 CREATE TABLE amenities(
-  `amenity_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `type` varchar(40) NOT NULL DEFAULT ''
+	`amenity_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`type` varchar(40) NOT NULL DEFAULT ''
 );
 
 CREATE TABLE property(
-  `property_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
+	`property_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
 );
 
 CREATE TABLE property_amenities(
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `amenity_id` int(11) NOT NULL DEFAULT '0',
-  `property_id` int(11) NOT NULL DEFAULT '0'
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	`amenity_id` int(11) NOT NULL DEFAULT '0',
+	`property_id` int(11) NOT NULL DEFAULT '0'
 );

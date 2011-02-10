@@ -12,12 +12,13 @@ namespace ActiveRecord;
 class Column
 {
 	// types for $type
-	const STRING	= 1;
-	const INTEGER	= 2;
-	const DECIMAL	= 3;
-	const DATETIME	= 4;
-	const DATE		= 5;
-	const TIME		= 6;
+	const STRING    = 1;
+	const INTEGER   = 2;
+	const DECIMAL   = 3;
+	const DATETIME  = 4;
+	const DATE      = 5;
+	const TIME      = 6;
+	const BINARY    = 7;
 
 	/**
 	 * Map a type to an column type.
@@ -25,22 +26,29 @@ class Column
 	 * @var array
 	 */
 	static $TYPE_MAPPING = array(
-		'datetime'	=> self::DATETIME,
-		'timestamp'	=> self::DATETIME,
-		'date'		=> self::DATE,
-		'time'		=> self::TIME,
+		'datetime'  => self::DATETIME,
+		'timestamp' => self::DATETIME,
+		'date'      => self::DATE,
+		'time'      => self::TIME,
 
-		'int'		=> self::INTEGER,
-		'tinyint'	=> self::INTEGER,
-		'smallint'	=> self::INTEGER,
-		'mediumint'	=> self::INTEGER,
-		'bigint'	=> self::INTEGER,
+		'int'       => self::INTEGER,
+		'tinyint'   => self::INTEGER,
+		'smallint'  => self::INTEGER,
+		'mediumint' => self::INTEGER,
+		'bigint'    => self::INTEGER,
 
-		'float'		=> self::DECIMAL,
-		'double'	=> self::DECIMAL,
-		'numeric'	=> self::DECIMAL,
-		'decimal'	=> self::DECIMAL,
-		'dec'		=> self::DECIMAL);
+		'float'     => self::DECIMAL,
+		'double'    => self::DECIMAL,
+		'numeric'   => self::DECIMAL,
+		'decimal'   => self::DECIMAL,
+		'dec'       => self::DECIMAL,
+
+		'bytea'     => self::BINARY,
+		'binary'    => self::BINARY,
+		'varbinary' => self::BINARY,
+		'tinyblob'  => self::BINARY,
+		'blob'      => self::BINARY,
+		'mediumblob'=> self::BINARY);
 
 	/**
 	 * The true name of this column.
@@ -119,6 +127,14 @@ class Column
 			case self::STRING:	return (string)$value;
 			case self::INTEGER:	return (int)$value;
 			case self::DECIMAL:	return (double)$value;
+			case self::BINARY: 
+				if (!$value)
+					return null;
+				
+				if ($value instanceof Binary)
+					return $value;
+
+				return new Binary($value);
 			case self::DATETIME:
 			case self::DATE:
 				if (!$value)
