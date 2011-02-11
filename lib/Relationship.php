@@ -165,8 +165,8 @@ abstract class AbstractRelationship implements InterfaceRelationship
 			}
 			$options['joins'] = $this->construct_inner_join_sql($through_table, true);
 
-            // we need to select all of the fields
-			$options['select'] = '*';
+            // we need to select all of the fields + foreign key, to validate relations
+			$options['select'] = $this->get_table()->get_fully_qualified_table_name(true) . '.*, `' . $query_key . '`';
 
             $query_key = $fk[0];
 
