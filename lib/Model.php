@@ -1210,6 +1210,12 @@ class Model
 
 		if (($rel = $table->get_relationship($name)))
 		{
+            // we need to clean up attributes, if we have a through relationship
+            if (!is_null($model))
+            {
+                $model->reset_attributes(array_intersect_key($model->attributes(), $model->table()->columns));
+            }
+
 			if ($rel->is_poly())
 			{
 				// if the related model is null and it is a poly then we should have an empty array
@@ -1246,6 +1252,16 @@ class Model
 		$this->__relationships = array();
 		$this->reset_dirty();
 		return $this;
+	}
+
+	/**
+	 * Resets the attributes array.
+	 *
+	 * @see attributes
+	 */
+	private function reset_attributes($attributes = array())
+	{
+		$this->attributes = $attributes;
 	}
 
 	/**

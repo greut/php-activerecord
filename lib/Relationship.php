@@ -165,7 +165,10 @@ abstract class AbstractRelationship implements InterfaceRelationship
 			}
 			$options['joins'] = $this->construct_inner_join_sql($through_table, true);
 
-			$query_key = $this->primary_key[0];
+            // we need to select all of the fields
+			$options['select'] = '*';
+
+            $query_key = $fk[0];
 
 			// reset keys
 			$this->primary_key = $pk;
@@ -188,16 +191,23 @@ abstract class AbstractRelationship implements InterfaceRelationship
 
 			foreach ($related_models as $related)
 			{
-				if ($related->$query_key == $key_to_match)
+                $hash = spl_object_hash($related);
+
+                // is in hash of used models or has a required attribute of required value
+                $is_related = (array_key_exists($hash, $used_models) && $used_models[$hash] == $key_to_match) || (isset($related->$query_key) && $related->$query_key == $key_to_match);
+
+				if ($is_related)
 				{
-					$hash = spl_object_hash($related);
+                    // we do not use clone, because clone kills relationships
+                    $model->set_relationship_from_eager_load($related, $this->attribute_name);
 
-					if (in_array($hash, $used_models))
-						$model->set_relationship_from_eager_load(clone($related), $this->attribute_name);
-					else
-						$model->set_relationship_from_eager_load($related, $this->attribute_name);
+                    // in case we've met this object for the first time, we need to hash it
+                    if (!array_key_exists($hash, $used_models)) {
+                        $hash = spl_object_hash($related);
+                    }
 
-					$used_models[] = $hash;
+					$used_models[$hash] = $key_to_match;
+
 					$matches++;
 				}
 			}
@@ -359,12 +369,11 @@ abstract class AbstractRelationship implements InterfaceRelationship
 		if (!is_null($alias))
 		{
 			$aliased_join_table_name = $alias = $this->get_table()->conn->quote_name($alias);
-			$alias .= ' ';
 		}
 		else
 			$aliased_join_table_name = $join_table_name;
 
-		return "INNER JOIN $join_table_name {$alias}ON($from_table_name.$foreign_key = $aliased_join_table_name.$join_primary_key)";
+		return "INNER JOIN $join_table_name {$alias}ON ($from_table_name.`$foreign_key` = $aliased_join_table_name.`$join_primary_key`)";
 	}
 
 	/**
@@ -498,7 +507,7 @@ class HasMany extends AbstractRelationship
 				$fk = $this->foreign_key;
 
 				$this->set_keys($this->get_table()->class->getName(), true);
-				
+
 				$class = $this->class_name;
 				$relation = $class::table()->get_relationship($this->through);
 				$through_table = $relation->get_table();
@@ -518,7 +527,7 @@ class HasMany extends AbstractRelationship
 		$options = $this->unset_non_finder_options($this->options);
 		$options['conditions'] = $conditions;
 
-        return ($this->poly_relationship) ? 
+        return ($this->poly_relationship) ?
             new RelatedObjects(array(
                 'class_name' => $class_name,
                 'options' => $options
@@ -731,7 +740,7 @@ class RelatedObjects implements \ArrayAccess, \Countable, \IteratorAggregate {
 			$this->_data[$offset] :
 			null;
 	}
-	
+
 	// Shouldn't it be read-only?
 	public function offsetUnset($offset) {
 		$this->fetch();
