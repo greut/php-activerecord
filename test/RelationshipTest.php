@@ -218,7 +218,7 @@ class RelationshipTest extends DatabaseTest
 	{
 		Event::$belongs_to[0]['joins'] = 'venue';
 		$event = Event::first()->venue;
-		$this->assert_sql_doesnt_has('INNER JOIN venues ON(events.venue_id = venues.id)',Event::table()->last_sql);
+		$this->assert_sql_doesnt_has('INNER JOIN venues ON (events.venue_id = venues.id)',Event::table()->last_sql);
 	}
 
 	public function test_has_many_with_explicit_class_name()
@@ -372,7 +372,7 @@ class RelationshipTest extends DatabaseTest
 	public function test_has_many_with_joins()
 	{
 		$x = Venue::first(array('joins' => array('events')));
-		$this->assert_sql_has('INNER JOIN events ON(venues.id = events.venue_id)',Venue::table()->last_sql);
+		$this->assert_sql_has('INNER JOIN events ON (venues.id = events.venue_id)',Venue::table()->last_sql);
 	}
 
 	public function test_has_many_with_explicit_keys()
@@ -462,7 +462,7 @@ class RelationshipTest extends DatabaseTest
 	public function test_has_one_with_joins()
 	{
 		$x = Employee::first(array('joins' => array('position')));
-		$this->assert_sql_has('INNER JOIN positions ON(employees.id = positions.employee_id)',Employee::table()->last_sql);
+		$this->assert_sql_has('INNER JOIN positions ON (employees.id = positions.employee_id)',Employee::table()->last_sql);
 	}
 
 	public function test_has_one_with_explicit_keys()
