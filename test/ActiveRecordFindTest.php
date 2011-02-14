@@ -324,9 +324,9 @@ class ActiveRecordFindTest extends DatabaseTest
 	public function test_joins_on_model_with_association_and_explicit_joins()
 	{
 		JoinBook::$belongs_to = array(array('author'));
-		JoinBook::first(array('joins' => array('author','LEFT JOIN authors a ON(books.secondary_author_id=a.author_id)')));
-		$this->assert_sql_has('INNER JOIN authors ON(books.author_id = authors.author_id)',JoinBook::table()->last_sql);
-		$this->assert_sql_has('LEFT JOIN authors a ON(books.secondary_author_id=a.author_id)',JoinBook::table()->last_sql);
+		JoinBook::first(array('joins' => array('author','LEFT JOIN `authors` a ON (`books`.`secondary_author_id` = a.`author_id`)')));
+		$this->assert_sql_has('INNER JOIN `authors` ON (`books`.`author_id` = `authors`.`author_id`)',JoinBook::table()->last_sql);
+		$this->assert_sql_has('LEFT JOIN `authors` a ON (`books`.`secondary_author_id` = `a.author_id`)',JoinBook::table()->last_sql);
 	}
 
 	public function test_joins_on_model_with_explicit_joins()
