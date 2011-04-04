@@ -1,7 +1,7 @@
 <?php
 namespace ActiveRecord;
 
-class Memcache
+class Memcached
 {
 	const DEFAULT_PORT = 11211;
 
@@ -20,10 +20,11 @@ class Memcache
 	 */
 	public function __construct($options)
 	{
-		$this->memcache = new \Memcache();
+		$this->memcache = new \Memcached();
 		$options['port'] = isset($options['port']) ? $options['port'] : self::DEFAULT_PORT;
 
-		if (!@$this->memcache->connect($options['host'],$options['port']))
+		$this->memcache->addServer($options['host'],$options['port']);
+		if (!$this->memcache->getStats())
 			throw new CacheException("Could not connect to $options[host]:$options[port]");
 	}
 
@@ -39,7 +40,7 @@ class Memcache
 
 	public function write($key, $value, $expire)
 	{
-		$this->memcache->set($key,$value,null,$expire);
+		$this->memcache->set($key,$value,$expire);
 	}
 }
 ?>

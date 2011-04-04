@@ -289,6 +289,9 @@ class Config extends Singleton
 	 * Example:
 	 *
 	 * <code>
+	 * // using PECL memcache
+	 * $config->set_cache("memcache://localhost");
+	 * // using PECL memcached (libmemcached)
 	 * $config->set_cache("memcached://localhost");
 	 * $config->set_cache("memcached://localhost",array("expire" => 60));
 	 * </code>

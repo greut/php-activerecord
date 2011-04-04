@@ -1,6 +1,5 @@
 <?php
 namespace ActiveRecord;
-use Closure;
 
 /**
  * Cache::get('the-cache-key', function() {
@@ -26,8 +25,7 @@ class Cache
 	 * Ex:
 	 * $cfg_ar = ActiveRecord\Config::instance();
 	 * $cfg_ar->set_cache('memcache://localhost:11211',array('namespace' => 'my_cool_app',
-	 *																											 'expire'		 => 120
-	 *																											 ));
+	 *                                                       'expire'    => 120));
 	 *
 	 * In the example above all the keys expire after 120 seconds, and the
 	 * all get a postfix 'my_cool_app'.
