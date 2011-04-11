@@ -1,10 +1,10 @@
 <?php
 include 'helpers/config.php';
-include_once 'CacheTest.php';
+include_once 'MemcacheCacheTest.php';
 
 use ActiveRecord\Cache;
 
-class CachedTest extends CacheTest
+class MemcachedCacheTest extends MemcacheCacheTest
 {
 	public function set_up()
 	{
@@ -13,7 +13,7 @@ class CachedTest extends CacheTest
 			$this->markTestSkipped('The memcached extension is not available');
 			return;
 		}
-		
+
 		Cache::initialize('memcached://localhost');
 	}
 }
