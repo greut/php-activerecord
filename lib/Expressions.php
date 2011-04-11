@@ -182,4 +182,4 @@ class Expressions
 		return "'" . str_replace("'","''",$value) . "'";
 	}
 }
-?>
+?>
