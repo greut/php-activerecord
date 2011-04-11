@@ -13,7 +13,7 @@ class CacheTest extends SnakeCase_PHPUnit_Framework_TestCase
 			return;
 		}
 		
-		Cache::initialize('memcache://localhost:11211');
+		Cache::initialize('memcache://localhost');
 	}
 
 	public function tear_down()
