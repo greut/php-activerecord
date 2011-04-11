@@ -3,18 +3,18 @@ include 'helpers/config.php';
 
 use ActiveRecord\Cache;
 
-class MemcachedActiveRecordCacheTest extends DatabaseTest
+class ApcActiveRecordCacheTest extends DatabaseTest
 {
 	public function set_up($connection_name=null)
 	{
-		if (!extension_loaded('memcached'))
+		if (!extension_loaded('apc'))
 		{
-			$this->markTestSkipped('The memcached extension is not available');
+			$this->markTestSkipped('The apc extension is not available');
 			return;
 		}
 
 		parent::set_up($connection_name);
-		ActiveRecord\Config::instance()->set_cache('memcached://localhost');
+		ActiveRecord\Config::instance()->set_cache('apc://localhost');
 	}
 
 	public function tear_down()
@@ -30,7 +30,7 @@ class MemcachedActiveRecordCacheTest extends DatabaseTest
 
 	public function test_explicit_default_expire()
 	{
-		ActiveRecord\Config::instance()->set_cache('memcached://localhost',array('expire' => 1));
+		ActiveRecord\Config::instance()->set_cache('apc://localhost',array('expire' => 1));
 		$this->assert_equals(1,Cache::$options['expire']);
 	}
 
