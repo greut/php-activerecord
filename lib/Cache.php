@@ -43,7 +43,7 @@ class Cache
 			$file = ucwords(Inflector::instance()->camelize($url['scheme']));
 			$class = "ActiveRecord\\$file";
 			require_once __DIR__ . "/cache/$file.php";
-			static::$adapter = new $class($url);
+			static::$adapter = new $class($url, $options);
 		}
 		else
 			static::$adapter = null;

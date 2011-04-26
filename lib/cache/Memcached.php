@@ -3,44 +3,65 @@ namespace ActiveRecord;
 
 class Memcached
 {
-	const DEFAULT_PORT = 11211;
-
-	private $memcache;
-
+	private $memcached;
+    private $default_expire = 0;
+    
 	/**
-	 * Creates a Memcache instance.
+	 * Creates a Memcached instance.
 	 *
-	 * Takes an $options array w/ the following parameters:
-	 *
-	 * <ul>
-	 * <li><b>host:</b> host for the memcache server </li>
-	 * <li><b>port:</b> port for the memcache server </li>
-	 * </ul>
-	 * @param array $options
+	 * @param array $servers Each entry in servers is supposed to be an array containing hostname, port, and, optionally, weight of the server
+	 * @param array $options Specify additional options (http://www.php.net/manual/en/memcached.constants.php)
 	 */
-	public function __construct($options)
+	public function __construct($ignore, $settings)
 	{
-		$this->memcache = new \Memcached();
-		$options['port'] = isset($options['port']) ? $options['port'] : self::DEFAULT_PORT;
-
-		$this->memcache->addServer($options['host'],$options['port']);
-		if (!$this->memcache->getStats())
+		$this->memcached = new \Memcached();
+		
+		if (!is_array($settings) || !isset($settings['servers']))
+		    throw new CacheException("You need to connect to at least one memcached server.");
+		    
+		if (!count($this->memcached->getServerList())) {
+            $this->memcached->addServers($settings['servers']);
+        }
+        
+		if (isset($settings['namespace']))
+		    $this->memcached->setOption(\Memcached::OPT_PREFIX_KEY, $settings['namespace']);
+		
+		if (isset($settings['expire']))
+		    $this->default_expire = $settings['expire'];
+	    
+        if (isset($settings['options'])) {
+	        foreach ($settings['options'] AS $key=>$value) {
+	            $this->memcached->setOption($key, $value);
+		    }
+		}
+		
+		if (!$this->memcached->getStats())
 			throw new CacheException("Could not connect to $options[host]:$options[port]");
 	}
 
 	public function flush()
 	{
-		$this->memcache->flush();
+		$this->memcached->flush();
 	}
 
 	public function read($key)
 	{
-		return $this->memcache->get($key);
+	    $value = $this->memcached->get($key);
+	    
+	    if ($this->memcached->getOption(\Memcached::OPT_SERIALIZER) != \Memcached::SERIALIZER_IGBINARY && function_exists("igbinary_unserialize")) {
+	        $value = igbinary_unserialize($value);
+	    }
+	    
+		return $value;
 	}
 
 	public function write($key, $value, $expire)
 	{
-		$this->memcache->set($key,$value,$expire);
+	    if ($this->memcached->getOption(\Memcached::OPT_SERIALIZER) != \Memcached::SERIALIZER_IGBINARY && function_exists("igbinary_serialize")) {
+	        $value = igbinary_serialize($value);
+	    }
+	    
+		$this->memcached->set($key,$value,$expire);
 	}
 }
 ?>
