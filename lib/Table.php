@@ -365,9 +365,10 @@ class Table
 		// than using instanceof but gud enuff for now
 		$quote_name = !($this->conn instanceof PgsqlAdapter);
 
+		$cache_key = $this->get_fully_qualified_table_name(false);
 		$table_name = $this->get_fully_qualified_table_name($quote_name);
 		$conn = $this->conn;
-		$this->columns = Cache::get("get_meta_data-$table_name", function() use ($conn, $table_name) { return $conn->columns($table_name); });
+		$this->columns = Cache::get("get_meta_data-$cache_key", function() use ($conn, $table_name) { return $conn->columns($table_name); });
 	}
 
 	/**
