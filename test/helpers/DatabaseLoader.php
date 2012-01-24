@@ -109,7 +109,7 @@ class DatabaseLoader
 			$table = $this->quote_name($table);
 
 			foreach ($fields as &$name)
-				$name = $this->quote_name($name);
+				$name = $this->quote_name(trim($name));
 
 			$fields = join(',',$fields);
 
