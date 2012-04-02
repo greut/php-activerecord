@@ -10,6 +10,15 @@ class BookPresence extends ActiveRecord\Model
 	);
 }
 
+class BookPresenceOnCreate extends ActiveRecord\Model
+{
+	static $table_name = 'books';
+
+	static $validates_presence_of = array(
+		array('name', 'on' => 'create')
+	);
+}
+
 class AuthorPresence extends ActiveRecord\Model
 {
 	static $table_name = 'authors';
@@ -25,6 +34,17 @@ class ValidatesPresenceOfTest extends DatabaseTest
 	{
 		$book = new BookPresence(array('name' => 'blah'));
 		$this->assert_false($book->is_invalid());
+	}
+
+	public function test_presence_only_on_create()
+	{
+		$book = new BookPresenceOnCreate(array('name' => 'blah'));
+		$this->assert_true($book->is_valid());
+		$book = new BookPresenceOnCreate(array('name' => ''));
+		$this->assert_false($book->is_valid());
+		$book = BookPresenceOnCreate::find_by_book_id(1);
+		$book->name = null;
+		$this->assert_true($book->is_valid());
 	}
 
 	public function test_presence_on_date_field_is_valid()
