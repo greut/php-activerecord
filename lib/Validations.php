@@ -174,12 +174,23 @@ class Validations
 	 */
 	public function validates_presence_of($attrs)
 	{
-		$configuration = array_merge(self::$DEFAULT_VALIDATION_OPTIONS, array('message' => Errors::$DEFAULT_ERROR_MESSAGES['blank'], 'on' => 'save'));
+		$configuration = array_merge(
+			self::$DEFAULT_VALIDATION_OPTIONS,
+			array(
+				'message' => Errors::$DEFAULT_ERROR_MESSAGES['blank'],
+			)
+		);
 
 		foreach ($attrs as $attr)
 		{
 			$options = array_merge($configuration, $attr);
-			$this->record->add_on_blank($options[0], $options['message']);
+			if (
+				$options['on'] == 'save' ||
+				$options['on'] == 'create' && $this->model->is_new_record() ||
+				$options['on'] == 'update' && !$this->model->is_new_record()
+			) {
+				$this->record->add_on_blank($options[0], $options['message']);
+			}
 		}
 	}
 
@@ -249,7 +260,12 @@ class Validations
 	 */
 	public function validates_inclusion_or_exclusion_of($type, $attrs)
 	{
-		$configuration = array_merge(self::$DEFAULT_VALIDATION_OPTIONS, array('message' => Errors::$DEFAULT_ERROR_MESSAGES[$type], 'on' => 'save'));
+		$configuration = array_merge(
+			self::$DEFAULT_VALIDATION_OPTIONS,
+			array(
+				'message' => Errors::$DEFAULT_ERROR_MESSAGES[$type],
+			)
+		);
 
 		foreach ($attrs as $attr)
 		{
@@ -305,7 +321,10 @@ class Validations
 	 */
 	public function validates_numericality_of($attrs)
 	{
-		$configuration = array_merge(self::$DEFAULT_VALIDATION_OPTIONS, array('only_integer' => false));
+		$configuration = array_merge(
+			self::$DEFAULT_VALIDATION_OPTIONS,
+			array('only_integer' => false)
+		);
 
 		// Notice that for fixnum and float columns empty strings are converted to nil.
 		// Validates whether the value of the specified attribute is numeric by trying to convert it to a float with Kernel.Float
@@ -321,7 +340,9 @@ class Validations
 			if ($this->is_null_with_option($var, $options))
 				continue;
 
-			$not_a_number_message = (isset($options['message']) ? $options['message'] : Errors::$DEFAULT_ERROR_MESSAGES['not_a_number']);
+			$not_a_number_message = (isset($options['message']) ?
+				$options['message'] :
+				Errors::$DEFAULT_ERROR_MESSAGES['not_a_number']);
 
 			if (true === $options['only_integer'] && !is_integer($var))
 			{
@@ -345,7 +366,9 @@ class Validations
 			foreach ($numericalityOptions as $option => $check)
 			{
 				$option_value = $options[$option];
-				$message = (isset($options['message']) ? $options['message'] : Errors::$DEFAULT_ERROR_MESSAGES[$option]);
+				$message = (isset($options['message']) ?
+					$options['message'] :
+					Errors::$DEFAULT_ERROR_MESSAGES[$option]);
 
 				if ('odd' != $option && 'even' != $option)
 				{
@@ -414,7 +437,13 @@ class Validations
 	 */
 	public function validates_format_of($attrs)
 	{
-		$configuration = array_merge(self::$DEFAULT_VALIDATION_OPTIONS, array('message' => Errors::$DEFAULT_ERROR_MESSAGES['invalid'], 'on' => 'save', 'with' => null));
+		$configuration = array_merge(
+			self::$DEFAULT_VALIDATION_OPTIONS,
+			array(
+				'message' => Errors::$DEFAULT_ERROR_MESSAGES['invalid'],
+				'with' => null
+			)
+		);
 
 		foreach ($attrs as $attr)
 		{
@@ -431,7 +460,7 @@ class Validations
 				continue;
 
 			if (!@preg_match($expression, $var))
-			$this->record->add($attribute, $options['message']);
+				$this->record->add($attribute, $options['message']);
 		}
 	}
 
