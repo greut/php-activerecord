@@ -43,7 +43,7 @@ class ValidatesPresenceOfTest extends DatabaseTest
 		$book = new BookPresenceOnCreate(array('name' => ''));
 		$this->assert_false($book->is_valid());
 		$book = BookPresenceOnCreate::find_by_book_id(1);
-		$book->name = null;
+		$book->set_attributes(array('name' => ''));
 		$this->assert_true($book->is_valid());
 	}
 
