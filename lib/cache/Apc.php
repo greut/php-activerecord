@@ -18,4 +18,9 @@ class Apc
 	{
 		return apc_store($key, $value, $expire);
 	}
+
+	function delete($key)
+	{
+		return apc_delete($key);
+	}
 }

@@ -65,6 +65,12 @@ class MemcacheCacheTest extends SnakeCase_PHPUnit_Framework_TestCase
 		$this->assert_equals("abcd", $this->cache_get());
 	}
 
+	public function test_delete()
+	{
+		Cache::$adapter->delete("1337");
+		$this->assert_false(Cache::$adapter->read("1337"));
+	}
+
 	public function test_cache_expire()
 	{
 		Cache::$options['expire'] = 1;

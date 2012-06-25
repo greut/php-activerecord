@@ -42,5 +42,10 @@ class Memcached
 	{
 		$this->memcache->set($key,$value,$expire);
 	}
+
+	public function delete($key)
+	{
+		return $this->memcache->delete($key);
+	}
 }
 ?>
