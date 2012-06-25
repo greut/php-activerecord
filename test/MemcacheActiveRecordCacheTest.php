@@ -38,7 +38,7 @@ class MemcacheActiveRecordCacheTest extends DatabaseTest
 	{
 		Author::first();
 
-		$table_name = Author::table()->get_fully_qualified_table_name(!($this->conn instanceof ActiveRecord\PgsqlAdapter));
+		$table_name = Author::table()->get_fully_qualified_table_name(false);
 		$value = Cache::$adapter->read("get_meta_data-$table_name");
 		$this->assert_true(is_array($value));
 	}
