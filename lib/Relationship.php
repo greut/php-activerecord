@@ -168,16 +168,24 @@ abstract class AbstractRelationship implements InterfaceRelationship
 			}
 			$options['joins'] = $this->construct_inner_join_sql($through_table, true);
 
-			$query_key = $this->primary_key[0];
+                        // XXX this seems to be the wrong key in many_through relation ships?
+                        // $query_key = $this->primary_key[0];
 
 			// reset keys
 			$this->primary_key = $pk;
 			$this->foreign_key = $fk;
+
+                        $query_key = $this->foreign_key[0];
 		}
 
 		$options = $this->unset_non_finder_options($options);
 
 		$class = $this->class_name;
+
+                if (!array_key_exists('select', $options)) {
+                  $options['select'] = $class::table()->get_fully_qualified_table_name() . '.*';
+                }
+                $options['select'] .= ",$query_key";
 
 		$related_models = $class::find('all', $options);
 		$used_models = array();
